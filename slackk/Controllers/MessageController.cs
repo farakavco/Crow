@@ -17,7 +17,7 @@ namespace slackk.Controllers
         [Route("")]
         public CrowResponse SendMessageToSlack(CrowMessage message)
         {
-           if (message != null && (message.Channel is string) && (message.Text is string))
+           if (message != null && (message.Channel is string) && (message.Text is string) && (message.Token is string))
             {
                 SlackResponse SlackResponse =  SlackClient.Deliver(message);
                 return new CrowResponse()

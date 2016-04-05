@@ -7,6 +7,7 @@ namespace slackk.Models
 {
     public class CrowMessage
     {
+        public string Token { get; set; }
         public string Channel { get; set; }
         public string Text { get; set; }
     }

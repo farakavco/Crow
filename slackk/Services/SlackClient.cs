@@ -20,7 +20,7 @@ namespace slackk.Services
         {
             SlackMessage Message = new SlackMessage()
             {
-                Token = WebConfigurationManager.AppSettings["AccessToken"],
+                Token = CrowMessage.Token,
                 Channel = CrowMessage.Channel,
                 Text = CrowMessage.Text
             };
