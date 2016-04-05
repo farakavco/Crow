@@ -13,8 +13,8 @@
 
 
 # Usage:
-	Developer is required to provide the api with the intended message and the destination Slack channel using /api/message/:
-
+	Developer is required to provide the api with the intended message and the destination Slack channel preceded by a "@" sign using /api/message/:
+	
 
 # Example:
 	
@@ -22,21 +22,23 @@
 		
 "text": intended message,
 		
-"channel": destination Slack channel
+"channel": @destination Slack channel
 	
 }
 
 	
-In case of successful delivery to Slack, a response is received in the following format indicating the success of the sending operation:
+In case of successful delivery to Slack, a response is received in the following format indicating the success of the sending operation. The message is sent to the 
+requested channel from SlackBot:
 	
 {
-		"status": "ok"
+		"ok": "true",
+		"error": null
 	}
 
 
 	Else, a failure message is received including the details of the failure:
 	
 {
-		"status": "failure",
-		"details": failure details
+		"ok": "false",
+		"error": failure details
 	}
