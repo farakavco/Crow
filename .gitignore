@@ -5,6 +5,7 @@
 #Visual Studio Files
 [Oo]bj
 [Bb]in
+[Cc]ontent
 [Dd]ebug
 [Bb]uild/
 *.user
@@ -46,5 +47,5 @@ Ankh.NoLoad
 #Other
 .svn
 
-
 /packages/*
+/.vs/*

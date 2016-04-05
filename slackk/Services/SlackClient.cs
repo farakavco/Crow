@@ -25,7 +25,7 @@ namespace slackk.Services
                 Text = CrowMessage.Text
             };
             WebRequest Request = WebRequest.Create(WebConfigurationManager.AppSettings["SlackAPI"]);
-            string DataFormat = "token={0}&text={1}0&channel={2}";
+            string DataFormat = "token={0}&text={1}&channel={2}";
             string Output = string.Format(DataFormat, Message.Token, Message.Text, Message.Channel);
             byte[] Data = Encoding.Default.GetBytes(Output);
             Request.Method = "POST";
