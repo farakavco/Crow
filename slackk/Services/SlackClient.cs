@@ -11,6 +11,7 @@ using System.Web.Http;
 using Newtonsoft.Json;
 using System.Text;
 using System.IO;
+using RestSharp;
 
 namespace slackk.Services
 {
@@ -18,30 +19,48 @@ namespace slackk.Services
     {
         public SlackResponse Deliver(CrowMessage CrowMessage)
         {
-            SlackMessage Message = new SlackMessage()
+
+            var client = new RestClient("https://slack.com");
+            if (CrowMessage.Content == null)
             {
-                Token = CrowMessage.Token,
-                Channel = CrowMessage.Channel,
-                Text = CrowMessage.Text
-            };
-            WebRequest Request = WebRequest.Create(WebConfigurationManager.AppSettings["SlackAPI"]);
-            string DataFormat = "token={0}&text={1}&channel={2}";
-            string Output = string.Format(DataFormat, Message.Token, Message.Text, Message.Channel);
-            byte[] Data = Encoding.Default.GetBytes(Output);
-            Request.Method = "POST";
-            Request.ContentType = "application/x-www-form-urlencoded";
-            Request.ContentLength = Data.Length;
+                SlackMessage Message = new SlackMessage()
+                {
+                    Text = CrowMessage.Text,
+                    Token = CrowMessage.Token,
+                    Channel = CrowMessage.Channel
+                }
 
-            Stream DataStream = Request.GetRequestStream();
-            DataStream.Write(Data, 0, Data.Length);
-            DataStream.Flush();
-            DataStream.Close();
+                var Request = new RestRequest("api/chat.postMessage", Method.POST);
+                Request.AddParameter("channel", Message.Channel);
+                Request.AddParameter("token", Message.Token);
+                Request.AddParameter("text", Message.Text);
+                IRestResponse Response = client.Execute(Request);
+                return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
+            }
+            else
+            {
+                SlackFile File = new SlackFile()
+                {
+                    Channel = CrowMessage.Channel,
+                    Content = System.Text.Encoding.ASCII.GetBytes(CrowMessage.Content),
+                    FileName = CrowMessage.FileName,
+                    Token = CrowMessage.Token,
+                };
+                HttpWebRequest Request = (HttpWebRequest)WebRequest.Create(WebConfigurationManager.AppSettings["SlackAPI"]);
+                Request.ContentType = "multipart/form-data";
+                Request.Headers.Add("token", File.Token);
+                Request.Headers.Add("")
+                Request.Method = "POST";
+                Stream RequestStream = Request.GetRequestStream();
+                RequestStream.Write(File.Content, 0, File.Content.Length);
+                RequestStream.Close();
 
-            WebResponse Response = Request.GetResponse();
-            StreamReader StreamReader = new StreamReader(Response.GetResponseStream());
-            string SlackServerResponse = StreamReader.ReadToEnd();
-            return JsonConvert.DeserializeObject<SlackResponse>(SlackServerResponse);
- 
+
+
+
+
+            }
+
         }
     }
 }
