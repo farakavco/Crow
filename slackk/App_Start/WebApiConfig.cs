@@ -19,9 +19,8 @@ namespace slackk
 
             //config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
-            //config.Formatters.Clear();
+            //config.Formatters.Clear
             config.Formatters.Add(new System.Net.Http.Formatting.JsonMediaTypeFormatter());
-
             // Web API routes
             config.MapHttpAttributeRoutes();
             //GlobalConfiguration.Configuration.Routes.MapHttpRoute(

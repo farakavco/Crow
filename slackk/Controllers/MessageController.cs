@@ -15,7 +15,7 @@ namespace slackk.Controllers
         SlackClient SlackClient = new SlackClient();
         [HttpPost]
         [Route("")]
-        public CrowResponse SendMessageToSlack(CrowMessage message)
+        public CrowResponse Upload(CrowMessage message)
         {
            if (message != null && (message.Channel is string) && (message.Token is string))
             {

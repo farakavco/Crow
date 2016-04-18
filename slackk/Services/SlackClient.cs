@@ -21,15 +21,14 @@ namespace slackk.Services
         {
 
             var client = new RestClient("https://slack.com");
-            if (CrowMessage.Content == null)
+            if (CrowMessage.File == null)
             {
                 SlackMessage Message = new SlackMessage()
                 {
                     Text = CrowMessage.Text,
                     Token = CrowMessage.Token,
                     Channel = CrowMessage.Channel
-                }
-
+                };
                 var Request = new RestRequest("api/chat.postMessage", Method.POST);
                 Request.AddParameter("channel", Message.Channel);
                 Request.AddParameter("token", Message.Token);
@@ -42,22 +41,19 @@ namespace slackk.Services
                 SlackFile File = new SlackFile()
                 {
                     Channel = CrowMessage.Channel,
-                    Content = System.Text.Encoding.ASCII.GetBytes(CrowMessage.Content),
+                    File = System.Text.Encoding.ASCII.GetBytes(CrowMessage.File),
                     FileName = CrowMessage.FileName,
                     Token = CrowMessage.Token,
+                    FileType = CrowMessage.FileType,
+                    InitialComment = CrowMessage.InitialComment
                 };
-                HttpWebRequest Request = (HttpWebRequest)WebRequest.Create(WebConfigurationManager.AppSettings["SlackAPI"]);
-                Request.ContentType = "multipart/form-data";
-                Request.Headers.Add("token", File.Token);
-                Request.Headers.Add("")
-                Request.Method = "POST";
-                Stream RequestStream = Request.GetRequestStream();
-                RequestStream.Write(File.Content, 0, File.Content.Length);
-                RequestStream.Close();
-
-
-
-
+                var Request = new RestRequest("api/files.upload", Method.POST);
+                Request.AddParameter("content-type", "multipart-form-data");
+                Request.AddParameter("channels", File.Channel);
+                Request.AddParameter("token", File.Token);
+                Request.AddFile("file", File.File, "shittt");
+                IRestResponse Response = client.Execute(Request);
+                return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
 
             }
 
