@@ -23,7 +23,7 @@ namespace slackk.Services
             var client = new RestClient("https://slack.com");
             if (CrowMessage.File == null)
             {
-                SlackMessage Message = new SlackMessage()
+                CrowMessage Message = new CrowMessage()
                 {
                     Text = CrowMessage.Text,
                     Token = CrowMessage.Token,
@@ -38,20 +38,22 @@ namespace slackk.Services
             }
             else
             {
-                SlackFile File = new SlackFile()
+                CrowMessage Message = new CrowMessage()
                 {
-                    Channel = CrowMessage.Channel,
-                    File = System.Text.Encoding.ASCII.GetBytes(CrowMessage.File),
-                    FileName = CrowMessage.FileName,
+                    Text = CrowMessage.Text,
                     Token = CrowMessage.Token,
-                    FileType = CrowMessage.FileType,
-                    InitialComment = CrowMessage.InitialComment
+                    Channel = CrowMessage.Channel,
+                    File = CrowMessage.File,
+                    FileName = CrowMessage.FileName
                 };
+
                 var Request = new RestRequest("api/files.upload", Method.POST);
-                Request.AddParameter("content-type", "multipart-form-data");
-                Request.AddParameter("channels", File.Channel);
-                Request.AddParameter("token", File.Token);
-                Request.AddFile("file", File.File, "shittt");
+                Request.AddHeader("content-type", "multipart/form-data");
+                Request.AddParameter("channels", Message.Channel);
+                Request.AddParameter("token", Message.Token);
+                Request.AddFile("file", Message.File, "image");
+                Request.AddParameter("filename", "image");
+                Request.AddParameter("filetype", "jpeg");
                 IRestResponse Response = client.Execute(Request);
                 return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
 
@@ -60,4 +62,5 @@ namespace slackk.Services
         }
     }
 }
+
 

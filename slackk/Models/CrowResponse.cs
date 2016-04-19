@@ -9,5 +9,10 @@ namespace slackk.Models
     {
         public string OK { get; set; }
         public string Error { get; set; }
+
+        public static implicit operator CrowResponse(CrowMessage v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
