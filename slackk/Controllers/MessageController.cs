@@ -6,6 +6,10 @@ using System.Net.Http;
 using System.Web.Http;
 using slackk.Services;
 using slackk.Models;
+using System.Web;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace slackk.Controllers
 {
@@ -17,9 +21,10 @@ namespace slackk.Controllers
         [Route("")]
         public CrowResponse Upload(CrowMessage message)
         {
-           if (message != null && (message.Channel is string) && (message.Token is string))
+
+            if (message != null && (message.Channel is string) && (message.Token is string))
             {
-                SlackResponse SlackResponse =  SlackClient.Deliver(message);
+                SlackResponse SlackResponse = SlackClient.Deliver(message);
                 return new CrowResponse()
                 {
                     OK = SlackResponse.OK,
