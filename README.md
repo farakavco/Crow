@@ -13,7 +13,7 @@
 
 
 # Usage:
-	Developer is required to provide the api with the access token of the company channel and the intended message and the destination Slack channel preceded by a "@" using crow.farakav.com/api/message/. The message is sent to the destinitaion Slack channel from SlackBot.
+	Developer is required to provide the api with the access token of the company channel, the intended message and the destination Slack channel preceded by a "@" using crow.farakav.com/api/message/. The message is sent to the destinitaion Slack channel from SlackBot.
 	
 
 # Application/Json Example for sending text:
