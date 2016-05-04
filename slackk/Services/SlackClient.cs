@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.IO;
 using RestSharp;
+using System.Configuration;
 
 namespace slackk.Services
 {
@@ -19,20 +20,20 @@ namespace slackk.Services
     {
         public SlackResponse Deliver(CrowMessage CrowMessage)
         {
-
             var client = new RestClient("https://slack.com");
             if (CrowMessage.File == null)
             {
                 CrowMessage Message = new CrowMessage()
                 {
                     Text = CrowMessage.Text,
-                    Token = CrowMessage.Token,
-                    Channel = CrowMessage.Channel
+                    Channel = CrowMessage.Channel,
+                    IP = CrowMessage.IP,
+                    Time = CrowMessage.Time
                 };
                 var Request = new RestRequest("api/chat.postMessage", Method.POST);
                 Request.AddParameter("channel", Message.Channel);
-                Request.AddParameter("token", Message.Token);
-                Request.AddParameter("text", Message.Text);
+                Request.AddParameter("token", ConfigurationManager.AppSettings["SlackToken"]);
+                Request.AddParameter("text", TextMaker(Message.Text, Message.IP, Message.Time));
                 IRestResponse Response = client.Execute(Request);
                 return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
             }
@@ -40,25 +41,26 @@ namespace slackk.Services
             {
                 CrowMessage Message = new CrowMessage()
                 {
-                    Text = CrowMessage.Text,
-                    Token = CrowMessage.Token,
                     Channel = CrowMessage.Channel,
                     File = CrowMessage.File,
-                    FileName = CrowMessage.FileName
+                    FileName = CrowMessage.FileName,
+                    IP = CrowMessage.IP,
+                    Time = CrowMessage.Time
                 };
-
                 var Request = new RestRequest("api/files.upload", Method.POST);
                 Request.AddHeader("content-type", "multipart/form-data");
                 Request.AddParameter("channels", Message.Channel);
-                Request.AddParameter("token", Message.Token);
+                Request.AddParameter("token", ConfigurationManager.AppSettings["SlackToken"]);
                 Request.AddFile("file", Message.File, "image");
-                Request.AddParameter("filename", "image");
-                Request.AddParameter("filetype", "jpeg");
+                Request.AddParameter("filename", Message.FileName);
+                Request.AddParameter("initial_comment", TextMaker(Message.FileName, Message.IP, Message.Time));
                 IRestResponse Response = client.Execute(Request);
                 return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
-
             }
-
+        }
+        public string TextMaker(string Text, string IP, DateTime DateTime)
+        {
+            return string.Format("{0} From {1} On {2}", Text, IP, DateTime);
         }
     }
 }

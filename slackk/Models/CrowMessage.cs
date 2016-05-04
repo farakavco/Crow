@@ -7,12 +7,12 @@ namespace slackk.Models
 {
     public class CrowMessage
     {
-        public string Token { get; set; }
+        public string CrowToken { get; set; }
         public string Channel { get; set; }
         public string Text { get; set; }
         public byte[] File { get; set; }
         public string FileName { get; set; }
-
-
+        public string IP { get; set; }
+        public DateTime Time { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace slackk.Models
 {
     public class SlackResponse
     {
-        public string OK { get; set; }
+        public bool OK { get; set; }
         public string Channel { get; set; }
         public string Error { get; set; }
         public Message Message { get; set; }

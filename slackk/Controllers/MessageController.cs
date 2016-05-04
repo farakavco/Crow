@@ -10,6 +10,7 @@ using System.Web;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Configuration;
 
 namespace slackk.Controllers
 {
@@ -17,13 +18,17 @@ namespace slackk.Controllers
     public class MessageController : ApiController
     {
         SlackClient SlackClient = new SlackClient();
+        MessageVerifier Verifier = new MessageVerifier();
+
         [HttpPost]
         [Route("")]
         public CrowResponse Upload(CrowMessage message)
         {
-
-            if (message != null && (message.Channel is string) && (message.Token is string))
+            var VerificationResult = Verifier.Verify(message);
+            if (VerificationResult.OK == true)
             {
+                message.IP = HttpContext.Current.Request.UserHostAddress;
+                message.Time = DateTime.Now;
                 SlackResponse SlackResponse = SlackClient.Deliver(message);
                 return new CrowResponse()
                 {
@@ -35,11 +40,11 @@ namespace slackk.Controllers
             {
                 return new CrowResponse()
                 {
-                    OK = "False",
-                    Error = "Bad Request"
+                    OK = VerificationResult.OK,
+                    Error = VerificationResult.Error
                 };
             }
-
         }
+
     }
 }

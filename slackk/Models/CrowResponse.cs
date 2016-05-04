@@ -7,7 +7,7 @@ namespace slackk.Models
 {
     public class CrowResponse
     {
-        public string OK { get; set; }
+        public bool OK { get; set; }
         public string Error { get; set; }
 
         public static implicit operator CrowResponse(CrowMessage v)
