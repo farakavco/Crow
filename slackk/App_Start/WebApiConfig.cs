@@ -125,7 +125,7 @@ namespace slackk
                 {
                     File = file,
                     Channel = formData.Get("channel"),
-                    CrowToken = formData.Get("token"),
+                    SecretKey = formData.Get("token"),
                     FileName = formData.Get("filename"),
                     Text = formData.Get("text")
                 };

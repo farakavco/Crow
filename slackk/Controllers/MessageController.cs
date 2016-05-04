@@ -24,10 +24,12 @@ namespace slackk.Controllers
         [Route("")]
         public CrowResponse Upload(CrowMessage message)
         {
-            var VerificationResult = Verifier.Verify(message);
+            var Request = HttpContext.Current.Request;
+            message.IP = HttpContext.Current.Request.UserHostAddress;
+            var VerificationResult = Verifier.Verify(message, Request);
             if (VerificationResult.OK == true)
             {
-                message.IP = HttpContext.Current.Request.UserHostAddress;
+                message.IP = Request.UserHostAddress;
                 message.Time = DateTime.Now;
                 SlackResponse SlackResponse = SlackClient.Deliver(message);
                 return new CrowResponse()
@@ -41,7 +43,7 @@ namespace slackk.Controllers
                 return new CrowResponse()
                 {
                     OK = VerificationResult.OK,
-                    Error = VerificationResult.Error
+                    Error = VerificationResult.Error.ToString()
                 };
             }
         }
