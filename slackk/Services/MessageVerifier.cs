@@ -8,12 +8,13 @@ using Varzesh3.Leo.Utility;
 using System.Configuration;
 using System.Net;
 using Newtonsoft.Json;
+using System.Collections.Specialized;
 
 namespace slackk.Services
 {
     public class MessageVerifier
     {
-        public VerifyResponse Verify(CrowMessage Message, HttpRequest Request)
+        public VerifyResponse Verify(CrowMessage Message, NameValueCollection Headers)
         {
             //Checking the IP
             //if (!ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(Request.UserHostAddress))
@@ -24,9 +25,9 @@ namespace slackk.Services
             //    };
 
             // Checking the validity of token
-            if (Request.Headers["X-JWT-Token"] != string.Empty)
+            if (Headers["X-JWT-Token"] != string.Empty)
             {
-                string ProvidedJWTToken = JwtHelper.Decode(Request.Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
+                string ProvidedJWTToken = JwtHelper.Decode(Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
                 string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
                 if (PurifiedJWTToken != ConfigurationManager.AppSettings["SlackToken"])
                     return new VerifyResponse()

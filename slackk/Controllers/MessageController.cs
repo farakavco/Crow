@@ -30,7 +30,7 @@ namespace slackk.Controllers
             var Request = HttpContext.Current.Request;
 
             Message.IP = HttpContext.Current.Request.UserHostAddress;
-            var VerificationResult = Verifier.Verify(Message, Request);
+            var VerificationResult = Verifier.Verify(Message, Request.Headers);
             if (VerificationResult.OK)
             {
                 Message.IP = Request.UserHostAddress;
