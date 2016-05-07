@@ -111,6 +111,12 @@ namespace Test_Pigeon.Controllers
             };
             Assert.AreEqual(ExpectedResponseForInvalidMulti.OK, ActualResponseForInvalidMulti.OK);
             Assert.AreEqual(ExpectedResponseForInvalidMulti.Error, ActualResponseForInvalidMulti.Error);
+
+            // Testing With Empty Request
+            RestRequest EmptyRequest = new RestRequest(ConfigurationManager.AppSettings["CrowApiAddress"], Method.POST);
+            IRestResponse ResponseForEmptyReq = Client.Execute(EmptyRequest);
+            var JsonForEmptyReq = JsonConvert.DeserializeObject<SlackResponse>(ResponseForEmptyReq.Content);
+            CrowMessage Expe
         }
     }
 }

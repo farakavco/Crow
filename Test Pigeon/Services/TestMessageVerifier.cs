@@ -61,7 +61,6 @@ namespace Test_Pigeon
             Assert.AreEqual(ExpectedResponseForEmpty.Error, ActualResponseForEmpty.Error);
 
 
-
             // Testing Functionality When Header Doesn't Include Token
             Headers.Remove("X-JWT-Token");
             VerifyResponse ExpectedResponseForNullHeader = new VerifyResponse()

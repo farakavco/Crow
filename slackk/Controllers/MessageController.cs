@@ -27,8 +27,6 @@ namespace slackk.Controllers
         {
             CrowResponse Response = null;
             var Request = HttpContext.Current.Request;
-
-            Message.IP = HttpContext.Current.Request.UserHostAddress;
             var VerificationResult = Verifier.Verify(Message, Request.Headers, Request.UserHostAddress);
             if (VerificationResult.OK)
             {
@@ -39,7 +37,6 @@ namespace slackk.Controllers
                     OK = SlackResponse.OK,
                     Error = SlackResponse.Error
                 };
-
             }
             else
             {

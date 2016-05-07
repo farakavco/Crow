@@ -20,7 +20,7 @@ namespace slackk.Services
                     Text = CrowMessage.Text,
                     Channel = CrowMessage.Channel,
                     IP = CrowMessage.IP,
-                    Time = DateTime.Now
+                    Time = DateTime.Now.ToString()
                 };
                 var Request = new RestRequest("api/chat.postMessage", Method.POST);
                 Request.AddParameter("channel", Message.Channel);
@@ -41,7 +41,7 @@ namespace slackk.Services
                     File = CrowMessage.File,
                     FileName = CrowMessage.FileName,
                     IP = CrowMessage.IP,
-                    Time = DateTime.Now
+                    Time = DateTime.Now.ToString()
                 };
                 var Request = new RestRequest("api/files.upload", Method.POST);
                 Request.AddHeader("content-type", "multipart/form-data");
@@ -58,7 +58,7 @@ namespace slackk.Services
                 return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
             }
         }
-        public string TextMaker(string Text, string IP, DateTime DateTime)
+        public string TextMaker(string Text, string IP, string DateTime)
         {
             return string.Format("{0} From {1} On {2}", Text, IP, DateTime);
         }

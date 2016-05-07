@@ -12,6 +12,6 @@ namespace slackk.Models
         public byte[] File { get; set; }
         public string FileName { get; set; }
         public string IP { get; set; }
-        public DateTime Time { get; set; }
+        public string Time { get; set; }
     }
 }
