@@ -17,6 +17,7 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.Net;
+using System.Configuration;
 
 namespace slackk
 {
@@ -125,7 +126,6 @@ namespace slackk
                 {
                     File = file,
                     Channel = formData.Get("channel"),
-                    SecretKey = formData.Get("token"),
                     FileName = formData.Get("filename"),
                     Text = formData.Get("text")
                 };
@@ -135,7 +135,7 @@ namespace slackk
             {
                 return new CrowMessage()
                 {
-                    Text = "Please remove the multipartfromdata header from the requst and also make sure you have attached a file"
+                    Text = ConfigurationManager.AppSettings["MultiPartException"]
                 };
             }
         }

@@ -26,6 +26,7 @@ namespace slackk.Controllers
         [Route("")]
         public CrowResponse Upload(CrowMessage message)
         {
+            CrowResponse Response = null;
             var Request = HttpContext.Current.Request;
             try
             {
@@ -36,7 +37,7 @@ namespace slackk.Controllers
                     message.IP = Request.UserHostAddress;
                     message.Time = DateTime.Now;
                     SlackResponse SlackResponse = SlackClient.Deliver(message);
-                    return new CrowResponse()
+                    Response = new CrowResponse()
                     {
                         OK = SlackResponse.OK,
                         Error = SlackResponse.Error
@@ -44,7 +45,7 @@ namespace slackk.Controllers
                 }
                 else
                 {
-                    return new CrowResponse()
+                    Response = new CrowResponse()
                     {
                         OK = VerificationResult.OK,
                         Error = VerificationResult.Error.ToString()
@@ -59,6 +60,7 @@ namespace slackk.Controllers
                 string TelegramReportMessage = string.Format("{0} tried to send {1} to {2} but failed due to {3}", IPAdress, Text, Channel, ex.ToString());
                 TelegramBot.SendTextMessage(ConfigurationManager.AppSettings["TargetTelegramChannel"], TelegramReportMessage);
             }
+            return Response;
         }
 
     }

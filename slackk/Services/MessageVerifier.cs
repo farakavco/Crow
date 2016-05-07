@@ -16,17 +16,17 @@ namespace slackk.Services
         public VerifyResponse Verify(CrowMessage Message, HttpRequest Request)
         {
             //Checking the IP
-            if (!ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(Request.UserHostAddress))
-                return new VerifyResponse()
-                {
-                    OK = false,
-                    Error = HttpStatusCode.Unauthorized
-                };
+            //if (!ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(Request.UserHostAddress))
+            //    return new VerifyResponse()
+            //    {
+            //        OK = false,
+            //        Error = HttpStatusCode.Unauthorized
+            //    };
 
             // Checking the validity of token
             if (Request.Headers["X-JWT-Token"] != string.Empty)
             {
-                string ProvidedJWTToken = JwtHelper.Decode(Request.Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"]);
+                string ProvidedJWTToken = JwtHelper.Decode(Request.Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
                 string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
                 if (PurifiedJWTToken != ConfigurationManager.AppSettings["SlackToken"])
                     return new VerifyResponse()
