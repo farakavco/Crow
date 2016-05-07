@@ -21,7 +21,6 @@ namespace slackk.Controllers
         SlackClient SlackClient = new SlackClient();
         MessageVerifier Verifier = new MessageVerifier();
 
-
         [HttpPost]
         [Route("")]
         public CrowResponse Upload(CrowMessage Message)
@@ -30,11 +29,10 @@ namespace slackk.Controllers
             var Request = HttpContext.Current.Request;
 
             Message.IP = HttpContext.Current.Request.UserHostAddress;
-            var VerificationResult = Verifier.Verify(Message, Request.Headers);
+            var VerificationResult = Verifier.Verify(Message, Request.Headers, Request.UserHostAddress);
             if (VerificationResult.OK)
             {
                 Message.IP = Request.UserHostAddress;
-                Message.Time = DateTime.Now;
                 SlackResponse SlackResponse = SlackClient.Deliver(Message);
                 Response = new CrowResponse()
                 {

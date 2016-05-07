@@ -20,7 +20,7 @@ namespace slackk.Services
                     Text = CrowMessage.Text,
                     Channel = CrowMessage.Channel,
                     IP = CrowMessage.IP,
-                    Time = CrowMessage.Time
+                    Time = DateTime.Now
                 };
                 var Request = new RestRequest("api/chat.postMessage", Method.POST);
                 Request.AddParameter("channel", Message.Channel);
@@ -41,7 +41,7 @@ namespace slackk.Services
                     File = CrowMessage.File,
                     FileName = CrowMessage.FileName,
                     IP = CrowMessage.IP,
-                    Time = CrowMessage.Time
+                    Time = DateTime.Now
                 };
                 var Request = new RestRequest("api/files.upload", Method.POST);
                 Request.AddHeader("content-type", "multipart/form-data");

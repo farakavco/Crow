@@ -14,57 +14,61 @@ namespace slackk.Services
 {
     public class MessageVerifier
     {
-        public VerifyResponse Verify(CrowMessage Message, NameValueCollection Headers)
+        public VerifyResponse Verify(CrowMessage Message, NameValueCollection Headers, string UserHostAddress)
         {
-            //Checking the IP
-            //if (!ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(Request.UserHostAddress))
-            //    return new VerifyResponse()
-            //    {
-            //        OK = false,
-            //        Error = HttpStatusCode.Unauthorized
-            //    };
-
-            // Checking the validity of token
-            if (Headers["X-JWT-Token"] != string.Empty)
+            if (Authenticate(Headers, UserHostAddress))
             {
-                string ProvidedJWTToken = JwtHelper.Decode(Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
-                string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
-                if (PurifiedJWTToken != ConfigurationManager.AppSettings["SlackToken"])
+                // Checking the validity of the message
+                if (Message == null)
                     return new VerifyResponse()
                     {
                         OK = false,
-                        Error = HttpStatusCode.Unauthorized
+                        Error = HttpStatusCode.BadRequest
+                    };
+                // Caring for the exception caused by multipart-data
+                else if (Message.Text == ConfigurationManager.AppSettings["MultiPartException"])
+                    return new VerifyResponse()
+                    {
+                        OK = false,
+                        Error = HttpStatusCode.NotAcceptable
+                    };
+                // Checking to ensure if both file and filename are provided
+                else if ((Message.FileName != null && Message.File == null) || (Message.File != null && Message.FileName == null))
+                {
+                    return new VerifyResponse()
+                    {
+                        OK = false,
+                        Error = HttpStatusCode.BadRequest
+                    };
+                }
+                else
+                    return new VerifyResponse()
+                    {
+                        OK = true,
+                        Error = HttpStatusCode.OK
                     };
             }
-            // Checking the validity of the message
-            if (Message == null)
-                return new VerifyResponse()
-                {
-                    OK = false,
-                    Error = HttpStatusCode.BadRequest
-                };
-            // Caring for the exception caused by multipart-data
-            else if (Message.Text == ConfigurationManager.AppSettings["MultiPartException"])
-                return new VerifyResponse()
-                {
-                    OK = false,
-                    Error = HttpStatusCode.NotAcceptable
-                };
-            // Checking to ensure if both file and filename are provided
-            else if ((Message.FileName != null && Message.File == null) || (Message.File != null && Message.FileName == null))
+            else
             {
                 return new VerifyResponse()
                 {
                     OK = false,
-                    Error = HttpStatusCode.BadRequest
+                    Error = HttpStatusCode.Unauthorized
                 };
             }
-            else
-                return new VerifyResponse()
-                {
-                    OK = true,
-                    Error = HttpStatusCode.OK
-                };
         }
+        public bool Authenticate(NameValueCollection Headers, string UserHostAddress)
+        {
+            bool Authenticated = false;
+            if (/*ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(UserHostAddress) && */!(Headers["X-JWT-Token"] == null))
+            {
+                string ProvidedJWTToken = JwtHelper.Decode(Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
+                string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
+                if (PurifiedJWTToken == ConfigurationManager.AppSettings["SlackToken"])
+                    Authenticated = true;
+            }
+            return Authenticated;
+        }
+
     }
 }

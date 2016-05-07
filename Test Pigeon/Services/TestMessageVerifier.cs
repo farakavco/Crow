@@ -41,8 +41,10 @@ namespace Test_Pigeon
                 OK = true,
                 Error = HttpStatusCode.OK
             };
-            VerifyResponse ActualResponse = MessageVerifier.Verify(JsonMessage, Headers);
-            Assert.AreEqual(ExpectedResponseForJson, ActualResponse);
+            VerifyResponse ActualResponse = MessageVerifier.Verify(JsonMessage, Headers, "");
+            Assert.AreEqual(ExpectedResponseForJson.Error, ActualResponse.Error);
+            Assert.AreEqual(ExpectedResponseForJson.OK, ActualResponse.OK);
+
 
             // Testing Functionality When Message Is Null;
             CrowMessage EmptyMessage = new CrowMessage()
@@ -54,8 +56,12 @@ namespace Test_Pigeon
                 OK = false,
                 Error = HttpStatusCode.BadRequest
             };
-            VerifyResponse ActualResponseForEmpty = MessageVerifier.Verify(EmptyMessage, Headers);
-            Assert.AreEqual(ExpectedResponseForEmpty, ActualResponseForEmpty);
+            VerifyResponse ActualResponseForEmpty = MessageVerifier.Verify(EmptyMessage, Headers, "");
+            Assert.AreEqual(ExpectedResponseForEmpty.OK, ActualResponseForEmpty.OK);
+            Assert.AreEqual(ExpectedResponseForEmpty.Error, ActualResponseForEmpty.Error);
+
+
+
             // Testing Functionality When Header Doesn't Include Token
             Headers.Remove("X-JWT-Token");
             VerifyResponse ExpectedResponseForNullHeader = new VerifyResponse()
@@ -63,9 +69,9 @@ namespace Test_Pigeon
                 OK = false,
                 Error = HttpStatusCode.Unauthorized
             };
-            VerifyResponse ActualResponseForNullHeader = MessageVerifier.Verify(JsonMessage, Headers);
-            Assert.AreEqual(ExpectedResponseForNullHeader, ActualResponseForNullHeader);
-
+            VerifyResponse ActualResponseForNullHeader = MessageVerifier.Verify(JsonMessage, Headers, "");
+            Assert.AreEqual(ExpectedResponseForNullHeader.Error, ActualResponseForNullHeader.Error);
+            Assert.AreEqual(ExpectedResponseForNullHeader.OK, ActualResponseForNullHeader.OK);
             // Testing Functionality When Token Is Not Valid
             Headers["X-JWT-Token"] = "Invalid";
             VerifyResponse ExpectedResponseForInvalidHeader = new VerifyResponse()
@@ -73,9 +79,9 @@ namespace Test_Pigeon
                 OK = false,
                 Error = HttpStatusCode.Unauthorized
             };
-            VerifyResponse ActualResponseForInvalidHeader = MessageVerifier.Verify(JsonMessage, Headers);
-            Assert.AreEqual(ExpectedResponseForInvalidHeader, ActualResponseForInvalidHeader);
-
+            VerifyResponse ActualResponseForInvalidHeader = MessageVerifier.Verify(JsonMessage, Headers, "");
+            Assert.AreEqual(ExpectedResponseForInvalidHeader.OK, ActualResponseForInvalidHeader.OK);
+            Assert.AreEqual(ExpectedResponseForInvalidHeader.Error, ActualResponseForInvalidHeader.Error);
 
             // Testing the IP
             // Pending
