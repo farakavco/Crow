@@ -49,6 +49,15 @@ namespace slackk.Services
                     OK = false,
                     Error = HttpStatusCode.NotAcceptable
                 };
+            // Checking to ensure if both file and filename are provided
+            else if ((Message.FileName != null && Message.File == null) || (Message.File != null && Message.FileName == null))
+            {
+                return new VerifyResponse()
+                {
+                    OK = false,
+                    Error = HttpStatusCode.BadRequest
+                };
+            }
             else
                 return new VerifyResponse()
                 {

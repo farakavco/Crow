@@ -222,6 +222,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Exceptions\RestSharpException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -240,6 +241,7 @@
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Services\MessageVerifier.cs" />
     <Compile Include="Services\SlackClient.cs" />
+    <Compile Include="Services\TelegramBot.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
