@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Configuration;
+using Telegram.Bot;
 
 namespace slackk.Controllers
 {
@@ -19,32 +20,44 @@ namespace slackk.Controllers
     {
         SlackClient SlackClient = new SlackClient();
         MessageVerifier Verifier = new MessageVerifier();
+        Api TelegramBot = new Api(ConfigurationManager.AppSettings["TelegramCrowToken"]);
 
         [HttpPost]
         [Route("")]
         public CrowResponse Upload(CrowMessage message)
         {
             var Request = HttpContext.Current.Request;
-            message.IP = HttpContext.Current.Request.UserHostAddress;
-            var VerificationResult = Verifier.Verify(message, Request);
-            if (VerificationResult.OK == true)
+            try
             {
-                message.IP = Request.UserHostAddress;
-                message.Time = DateTime.Now;
-                SlackResponse SlackResponse = SlackClient.Deliver(message);
-                return new CrowResponse()
+                message.IP = HttpContext.Current.Request.UserHostAddress;
+                var VerificationResult = Verifier.Verify(message, Request);
+                if (VerificationResult.OK == true)
                 {
-                    OK = SlackResponse.OK,
-                    Error = SlackResponse.Error
-                };
+                    message.IP = Request.UserHostAddress;
+                    message.Time = DateTime.Now;
+                    SlackResponse SlackResponse = SlackClient.Deliver(message);
+                    return new CrowResponse()
+                    {
+                        OK = SlackResponse.OK,
+                        Error = SlackResponse.Error
+                    };
+                }
+                else
+                {
+                    return new CrowResponse()
+                    {
+                        OK = VerificationResult.OK,
+                        Error = VerificationResult.Error.ToString()
+                    };
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return new CrowResponse()
-                {
-                    OK = VerificationResult.OK,
-                    Error = VerificationResult.Error.ToString()
-                };
+                string IPAdress = Request.UserHostAddress;
+                string Text = message.Text;
+                string Channel = message.Channel;
+                string TelegramReportMessage = string.Format("{0} tried to send {1} to {2} but failed due to {3}", IPAdress, Text, Channel, ex.ToString());
+                TelegramBot.SendTextMessage(ConfigurationManager.AppSettings["TargetTelegramChannel"], TelegramReportMessage);
             }
         }
 
