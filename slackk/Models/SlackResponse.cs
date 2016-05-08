@@ -6,11 +6,9 @@ using System.Web;
 
 namespace slackk.Models
 {
-    public class SlackResponse
+    public class SlackResponse : CrowResponse
     {
-        public bool OK { get; set; }
         public string Channel { get; set; }
-        public string Error { get; set; }
         public Message Message { get; set; }
 
     }

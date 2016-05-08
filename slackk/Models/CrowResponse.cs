@@ -5,7 +5,7 @@ using System.Web;
 
 namespace slackk.Models
 {
-    public class CrowResponse
+    public class CrowResponse : IResponse
     {
         public bool OK { get; set; }
         public string Error { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 
@@ -14,5 +15,17 @@ namespace slackk.Models
         public string IP { get; set; }
         public string Time { get; set; }
         public string TelegramChannel { get; set; }
+
+        public bool Verify()
+        {
+            return
+                // Caring for the exception caused by multipart-data
+                (this.Text != ConfigurationManager.AppSettings["MultiPartException"]) &&
+                // Checking to ensure if both file and filename are provided
+                !(this.FileName != null ^ this.File != null);
+                
+        }
+    
+
     }
 }
