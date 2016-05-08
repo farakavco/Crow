@@ -13,5 +13,6 @@ namespace slackk.Models
         public string FileName { get; set; }
         public string IP { get; set; }
         public string Time { get; set; }
+        public string TelegramChannel { get; set; }
     }
 }

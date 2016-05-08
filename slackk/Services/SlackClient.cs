@@ -29,7 +29,7 @@ namespace slackk.Services
                 Response = client.Execute(Request);
                 if (Response.ErrorMessage != null)
                 {
-                    throw new RestSharpException(Message.Text, Message.Channel, Message.IP, Response.ErrorMessage);
+                    throw new RestSharpException(Message.Text, Message.Channel, Message.IP, Response.ErrorMessage, Message.TelegramChannel);
                 }
                 return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
             }
@@ -53,7 +53,7 @@ namespace slackk.Services
                 Response = client.Execute(Request);
                 if (Response.ErrorMessage != null)
                 {
-                    throw new RestSharpException(Message.FileName, Message.Channel, Message.IP, Response.ErrorMessage);
+                    throw new RestSharpException(Message.FileName, Message.Channel, Message.IP, Response.ErrorMessage, Message.TelegramChannel);
                 }
                 return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
             }

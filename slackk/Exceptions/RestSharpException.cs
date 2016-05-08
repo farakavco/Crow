@@ -8,10 +8,10 @@ namespace slackk.Exceptions
 {
     public class RestSharpException : Exception
     {
-        public RestSharpException(string Text, string Channel, string IP, string Exception)
+        public RestSharpException(string Text, string Channel, string IP, string Exception, string TelegramChannel)
     : base()
         {
-            TelegramBot.DeliverMessage(Text, Channel, IP, Exception);
+            TelegramBot.DeliverMessage(Text, Channel, IP, Exception, TelegramChannel);
         }
     }
 }

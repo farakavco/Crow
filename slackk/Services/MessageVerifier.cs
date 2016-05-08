@@ -60,7 +60,7 @@ namespace slackk.Services
         public bool Authenticate(NameValueCollection Headers, string UserHostAddress)
         {
             bool Authenticated = false;
-            if (/*ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(UserHostAddress) && */!(Headers["X-JWT-Token"] == null))
+            if (/*ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(UserHostAddress) && */(Headers["X-JWT-Token"] != null) && ((Headers["X-JWT-Token"].Split('.')).Length == 3))
             {
                 string ProvidedJWTToken = JwtHelper.Decode(Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
                 string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
