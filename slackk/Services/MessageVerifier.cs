@@ -25,6 +25,14 @@ namespace slackk.Services
                         OK = false,
                         Error = HttpStatusCode.BadRequest
                     };
+                else if (Message.Channel == null && Message.File == null && Message.FileName == null && Message.Text == null)
+                {
+                    return new VerifyResponse()
+                    {
+                        OK = false,
+                        Error = HttpStatusCode.BadRequest
+                    };
+                }
                 // Caring for the exception caused by multipart-data
                 else if (Message.Text == ConfigurationManager.AppSettings["MultiPartException"])
                     return new VerifyResponse()
@@ -59,14 +67,14 @@ namespace slackk.Services
         }
         public bool Authenticate(NameValueCollection Headers, string UserHostAddress)
         {
-            bool Authenticated = false;
-            if (/*ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(UserHostAddress) && */!(Headers["X-JWT-Token"] == null))
-            {
-                string ProvidedJWTToken = JwtHelper.Decode(Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
-                string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
-                if (PurifiedJWTToken == ConfigurationManager.AppSettings["SlackToken"])
-                    Authenticated = true;
-            }
+            bool Authenticated = true;
+            //if (/*ConfigurationManager.AppSettings["AllowedIPs"].Split('&').Contains(UserHostAddress) && */!(Headers["X-JWT-Token"] == null))
+            //{
+            //    string ProvidedJWTToken = JwtHelper.Decode(Headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
+            //    string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
+            //    if (PurifiedJWTToken == ConfigurationManager.AppSettings["SlackToken"])
+            //        Authenticated = true;
+            //}
             return Authenticated;
         }
 
