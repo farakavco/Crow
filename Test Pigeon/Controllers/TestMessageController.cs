@@ -115,8 +115,19 @@ namespace Test_Pigeon.Controllers
             // Testing With Empty Request
             RestRequest EmptyRequest = new RestRequest(ConfigurationManager.AppSettings["CrowApiAddress"], Method.POST);
             IRestResponse ResponseForEmptyReq = Client.Execute(EmptyRequest);
-            var JsonForEmptyReq = JsonConvert.DeserializeObject<SlackResponse>(ResponseForEmptyReq.Content);
-            CrowMessage Expe
+            var JsonResponseForEmptyReq = JsonConvert.DeserializeObject<SlackResponse>(ResponseForEmptyReq.Content);
+            CrowResponse ExpectedResponseForEmptyRequest = new CrowResponse()
+            {
+                OK = false,
+                Error = HttpStatusCode.BadRequest.ToString()
+            };
+            CrowResponse ActualResponseForEmptyRequest = new CrowResponse()
+            {
+                OK = JsonResponseForEmptyReq.OK,
+                Error = JsonResponseForEmptyReq.Error
+            };
+            Assert.AreEqual(ExpectedResponseForEmptyRequest.OK, ActualResponseForEmptyRequest.OK);
+            Assert.AreEqual(ExpectedResponseForEmptyRequest.Error, ActualResponseForEmptyRequest.Error);
         }
     }
 }
