@@ -20,12 +20,10 @@ namespace slackk.Models
         {
             return
                 // Caring for the exception caused by multipart-data
-                (this.Text != ConfigurationManager.AppSettings["MultiPartException"]) &&
+                (Text != ConfigurationManager.AppSettings["MultiPartException"]) &&
                 // Checking to ensure if both file and filename are provided
-                !(this.FileName != null ^ this.File != null);
-                
+                !(FileName == null ^ File == null);
         }
     
-
     }
 }

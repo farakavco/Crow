@@ -19,17 +19,16 @@ namespace slackk.Controllers
     public class MessageController : ApiController
     {
         SlackClient SlackClient = new SlackClient();
-        MessageVerifier Verifier = new MessageVerifier();
 
         [HttpPost]
         [Route("")]
         public CrowResponse Upload(CrowMessage Message)
         {
-            if (!Message.Verify())
+            if (Message == null || !Message.Verify())
             {
-                return new CrowResponse() { OK = false, Error = "" };
+                return new CrowResponse() { OK = false, Error = "Bad Request" };
             }
-            return SlackClient.Deliver(Message) as CrowResponse;
+            return SlackClient.Deliver(Message);
         }
 
     }

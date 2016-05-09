@@ -135,7 +135,7 @@ namespace slackk
             {
                 return new CrowMessage()
                 {
-                    Text = ConfigurationManager.AppSettings["MultiPartException"]
+                    Text = "make_sure_you_have_attached_a_file"
                 };
             }
         }

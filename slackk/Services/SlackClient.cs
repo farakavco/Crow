@@ -9,7 +9,7 @@ namespace slackk.Services
 {
     public class SlackClient
     {
-        public SlackResponse Deliver(CrowMessage CrowMessage)
+        public CrowResponse Deliver(CrowMessage CrowMessage)
         {
             IRestResponse Response = null;
             var client = new RestClient("https://slack.com");
@@ -31,7 +31,8 @@ namespace slackk.Services
                 {
                     throw new RestSharpException(Message.Text, Message.Channel, Message.IP, Response.ErrorMessage, Message.TelegramChannel);
                 }
-                return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
+                var slackResponse = JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
+                return new CrowResponse() { OK = slackResponse.OK, Error = slackResponse.Error };
             }
             else
             {
@@ -55,7 +56,8 @@ namespace slackk.Services
                 {
                     throw new RestSharpException(Message.FileName, Message.Channel, Message.IP, Response.ErrorMessage, Message.TelegramChannel);
                 }
-                return JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
+                var slackResponse = JsonConvert.DeserializeObject<SlackResponse>(Response.Content);
+                return new CrowResponse() { OK = slackResponse.OK, Error = slackResponse.Error };
             }
         }
         public string TextMaker(string Text, string IP, string DateTime)

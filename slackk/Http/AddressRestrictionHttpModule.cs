@@ -27,7 +27,7 @@ namespace slackk.Http
                         allowedAddresses.Add(i.GetHashCode());
                     }
                 }
-                return AllowedAddresses;
+                return allowedAddresses;
             }
         }
 
@@ -51,11 +51,11 @@ namespace slackk.Http
         {
             var application = (HttpApplication)sender;
             var context = application.Context;
-            if (!AllowedAddresses.Contains(context.Request.UserHostAddress.GetHashCode()))
-            { 
-                context.Response.StatusCode = 401;
-                context.Response.End();
-            }
+            //if (!AllowedAddresses.Contains(context.Request.UserHostAddress.GetHashCode()))
+            //{ 
+            //    context.Response.StatusCode = 401;
+            //    context.Response.End();
+            //}
 
         }
     }

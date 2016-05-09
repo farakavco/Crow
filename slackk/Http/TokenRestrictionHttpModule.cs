@@ -11,6 +11,10 @@ namespace slackk.Http
 {
     public class TokenRestrictionHttpModule : IHttpModule
     {
+        public string ModuleName
+        {
+            get { return "TokenRestrictionHttpModule"; }
+        }
         public void Dispose()
         {
          //
