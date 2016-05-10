@@ -65,12 +65,17 @@ namespace Varzesh3.Leo.Utility
             var header = parts[0];
             var payload = parts[1];
             byte[] crypto = Base64UrlDecode(parts[2]);
-
+            JObject payloadData = null;
             var headerJson = Encoding.UTF8.GetString(Base64UrlDecode(header));
             var headerData = JObject.Parse(headerJson);
             var payloadJson = Encoding.UTF8.GetString(Base64UrlDecode(payload));
-            var payloadData = JObject.Parse(payloadJson);
-
+            try { 
+            payloadData = JObject.Parse(payloadJson);
+            }
+            catch
+            {
+                return "Bad Format";
+            }
             if (verify)
             {
                 var bytesToSign = Encoding.UTF8.GetBytes(string.Concat(header, ".", payload));

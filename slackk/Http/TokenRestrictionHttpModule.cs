@@ -39,6 +39,11 @@ namespace slackk.Http
             if ((headers["X-JWT-Token"] != null) && ((headers["X-JWT-Token"].Split('.')).Length == 3))
             {
                 string ProvidedJWTToken = JwtHelper.Decode(headers["X-JWT-Token"], ConfigurationManager.AppSettings["SecretKey"], false);
+                if (ProvidedJWTToken == "Bad Format")
+                {
+                    context.Response.StatusCode = 401;
+                    context.Response.End();
+                }
                 string PurifiedJWTToken = JsonConvert.DeserializeObject<Authentication>(ProvidedJWTToken).Token;
                 if (PurifiedJWTToken != ConfigurationManager.AppSettings["SlackToken"])
                 { 
