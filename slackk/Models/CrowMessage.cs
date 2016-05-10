@@ -20,9 +20,11 @@ namespace slackk.Models
         {
             return
                 // Caring for the exception caused by multipart-data
-                (Text != ConfigurationManager.AppSettings["MultiPartException"]) &&
+                !(Text == ConfigurationManager.AppSettings["MultiPartException"]) &&
                 // Checking to ensure if both file and filename are provided
-                !(FileName == null ^ File == null);
+                !(FileName == null ^ File == null) &&
+                // Checking to ensure if message attributes are not null
+                !(File == null && FileName == null && Channel == null && TelegramChannel == null && Text == null);
         }
     
     }

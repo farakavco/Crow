@@ -28,6 +28,7 @@ namespace slackk.Controllers
             {
                 return new CrowResponse() { OK = false, Error = "Bad Request" };
             }
+            Message.IP = HttpContext.Current.Request.UserHostAddress;
             return SlackClient.Deliver(Message);
         }
 
