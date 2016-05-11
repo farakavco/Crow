@@ -85,7 +85,7 @@ Else, a failure message is received including the details of the failure:
 
 
 Working Example in Python:
-​
+​{
 from datetime import datetime
 import requests
 import sys
@@ -165,4 +165,4 @@ def main():
 ​
 if __name__ == '__main__':
     sys.exit(main())
->>>>>>> Pigeon
+}
