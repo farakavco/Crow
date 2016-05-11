@@ -85,11 +85,6 @@ Else, a failure message is received including the details of the failure:
 
 
 Working Example in Python:
-#! /usr/bin/env python3.5
-"""
-    Changelog:
-    
-"""
 ​
 from datetime import datetime
 import requests
