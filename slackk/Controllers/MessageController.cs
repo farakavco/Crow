@@ -10,6 +10,8 @@ using System.Web;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Configuration;
+
 
 namespace slackk.Controllers
 {
@@ -17,29 +19,18 @@ namespace slackk.Controllers
     public class MessageController : ApiController
     {
         SlackClient SlackClient = new SlackClient();
+
         [HttpPost]
         [Route("")]
-        public CrowResponse Upload(CrowMessage message)
+        public CrowResponse Upload(CrowMessage Message)
         {
-
-            if (message != null && (message.Channel is string) && (message.Token is string))
+            if (Message == null || !Message.Verify())
             {
-                SlackResponse SlackResponse = SlackClient.Deliver(message);
-                return new CrowResponse()
-                {
-                    OK = SlackResponse.OK,
-                    Error = SlackResponse.Error
-                };
+                return new CrowResponse() { OK = false, Error = "Bad Request" };
             }
-            else
-            {
-                return new CrowResponse()
-                {
-                    OK = "False",
-                    Error = "Bad Request"
-                };
-            }
-
+            Message.IP = HttpContext.Current.Request.UserHostAddress;
+            return SlackClient.Deliver(Message);
         }
+
     }
 }

@@ -16,6 +16,8 @@ using System.Web;
 using System.Text;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Configuration;
 
 namespace slackk
 {
@@ -90,16 +92,7 @@ namespace slackk
             return token;
         }
     }
-    public class CustomMultipartFormDataProvider : MultipartFormDataRemoteStreamProvider
-    {
-        public override RemoteStreamInfo GetRemoteStream(HttpContent parent, HttpContentHeaders headers)
-        {
-            return new RemoteStreamInfo(
-                remoteStream: new MemoryStream(),
-                location: string.Empty,
-                fileName: string.Empty);
-        }
-    }
+
     public class MultipartFormFormatter : FormUrlEncodedMediaTypeFormatter
     {
         private const string StringMultipartMediaType = "multipart/form-data";
@@ -121,22 +114,30 @@ namespace slackk
 
         public override async Task<object> ReadFromStreamAsync(Type type, Stream readStream, HttpContent content, IFormatterLogger formatterLogger)
         {
-            var provider = await content.ReadAsMultipartAsync<InMemoryMultipartFormDataStreamProvider>(new InMemoryMultipartFormDataStreamProvider());
-            NameValueCollection formData = provider.FormData;
-            IList<HttpContent> files = provider.Files;
-            HttpContent file1 = files[0];
-            Stream file1Stream = await file1.ReadAsStreamAsync();
-            var file = ReadFully(file1Stream);
-            var CrowMessage = new CrowMessage()
+            try
             {
-                File = file,
-                Channel = formData.Get("channel"),
-                Token = formData.Get("token"),
-                FileName = formData.Get("filename"),
-                Text = formData.Get("text")
-               
-            };
-            return CrowMessage;
+                var provider = await content.ReadAsMultipartAsync<InMemoryMultipartFormDataStreamProvider>(new InMemoryMultipartFormDataStreamProvider());
+                NameValueCollection formData = provider.FormData;
+                IList<HttpContent> files = provider.Files;
+                HttpContent file1 = files[0];
+                Stream file1Stream = await file1.ReadAsStreamAsync();
+                var file = ReadFully(file1Stream);
+                var CrowMessage = new CrowMessage()
+                {
+                    File = file,
+                    Channel = formData.Get("channel"),
+                    FileName = formData.Get("filename"),
+                    Text = formData.Get("text")
+                };
+                return CrowMessage;
+            }
+            catch
+            {
+                return new CrowMessage()
+                {
+                    Text = "make_sure_you_have_attached_a_file"
+                };
+            }
         }
 
         private byte[] ReadFully(Stream input)
@@ -154,22 +155,22 @@ namespace slackk
         }
     }
 
-    public class FileModel
-    {
-        public FileModel(string filename, int contentLength, byte[] content)
-        {
-            Filename = filename;
-            ContentLength = contentLength;
-            Content = content;
-        }
+    //public class FileModel
+    //{
+    //    public FileModel(string filename, int contentLength, byte[] content)
+    //    {
+    //        Filename = filename;
+    //        ContentLength = contentLength;
+    //        Content = content;
+    //    }
 
-        public string Filename { get; set; }
+    //    public string Filename { get; set; }
 
-        public int ContentLength { get; set; }
+    //    public int ContentLength { get; set; }
 
-        public byte[] Content { get; set; }
+    //    public byte[] Content { get; set; }
 
-    }
+    //}
     public static class WebApiConfig
     {
 
@@ -186,7 +187,7 @@ namespace slackk
             config.Formatters.Add(new System.Net.Http.Formatting.JsonMediaTypeFormatter());
             // Web API routes
             config.Formatters.Add(new MultipartFormFormatter());
-            
+
             config.MapHttpAttributeRoutes();
             //GlobalConfiguration.Configuration.Routes.MapHttpRoute(
             //    name: "Crow Api",

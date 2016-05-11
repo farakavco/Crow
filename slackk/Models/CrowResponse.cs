@@ -5,14 +5,19 @@ using System.Web;
 
 namespace slackk.Models
 {
-    public class CrowResponse
+    public class CrowResponse : IResponse
     {
-        public string OK { get; set; }
+        public bool OK { get; set; }
         public string Error { get; set; }
 
-        public static implicit operator CrowResponse(CrowMessage v)
+        public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            return this.GetHashCode() == obj.GetHashCode();
         }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 }
